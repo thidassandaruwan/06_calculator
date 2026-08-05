@@ -39,11 +39,18 @@ body{
     background-color: #8c9b7a;
     color: #162210;
     font-family: 'Iceberg', monospace;
-    font-size: 2.5rem;
     font-weight: bold;
     text-align: right;
     border: 3px solid #232729;
     box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -1px -1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.input-output-section{
+    font-size: 2.5rem;
+}
+
+.sub-result-section{
+    font-size: 1.5rem;
 }
 
 .button-container{
@@ -86,4 +93,8 @@ body{
     background-color: #dca342;     
     color: #111;
     box-shadow: 0px 4px 0px #8c6420, 0px 5px 6px rgba(0,0,0,0.4);
+}
+
+.btn-wide {
+    grid-column: span 2;
 }

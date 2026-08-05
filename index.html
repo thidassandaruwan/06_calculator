@@ -10,38 +10,38 @@
 <body>
     <div class="app-container">
         <div class="display">
-            <div class="result-section">
-                <output id="result">45</output>
+            <div class="input-output-section">
+                <span id="input-output"> </span>
             </div>
-            <div class="input-section">
-                <span id="input">39 + 6</span>
+            <div class="sub-result-section">
+                <span id="sub-result"> </span>
             </div>
         </div>
         <div class="button-container">
-            <button class="btn btn-orange"> AC </button>
-            <button class="btn btn-orange"> C </button>
-            <button class="btn"> % </button>
-            <button class="btn"> X </button>
+            <button type="button" class="btn btn-orange" data-action="clear-all"> AC </button>
+            <button type="button" class="btn" data-op="x²"> x² </button>
+            <button type="button" class="btn" data-op="%"> % </button>
+            <button type="button" class="btn" data-op="x"> X </button>
 
-            <button class="btn" value="1"> 1 </button>
-            <button class="btn" value="2"> 2 </button>
-            <button class="btn" value="2"> 3</button>
-            <button class="btn" value="3"> / </button>
+            <button type="button" class="btn" data-num="1"> 1 </button>
+            <button type="button" class="btn" data-num="2"> 2 </button>
+            <button type="button" class="btn" data-num="3"> 3</button>
+            <button type="button" class="btn" data-op="/"> / </button>
 
-            <button class="btn" value="4"> 4 </button>
-            <button class="btn" value="5"> 5 </button>
-            <button class="btn" value="6"> 6 </button>
-            <button class="btn" value="-"> - </button>
+            <button type="button" class="btn" data-num="4"> 4 </button>
+            <button type="button" class="btn" data-num="5"> 5 </button>
+            <button type="button" class="btn" data-num="6"> 6 </button>
+            <button type="button" class="btn" data-op="-"> - </button>
 
-            <button class="btn" value="7"> 7 </button>
-            <button class="btn" value="8"> 8 </button>
-            <button class="btn" value="9"> 9 </button>
-            <button class="btn" value="+"> + </button>
+            <button type="button" class="btn" data-num="7"> 7 </button>
+            <button type="button" class="btn" data-num="8"> 8 </button>
+            <button type="button" class="btn" data-num="9"> 9 </button>
+            <button type="button" class="btn" data-op="+"> + </button>
 
-            <button class="btn" value="true"> + / - </button>
-            <button class="btn" value="0"> 0 </button>
-            <button class="btn" value="."> . </button>
-            <button class="btn btn-red" value="="> = </button>
+            <button type="button" class="btn" data-num="0"> 0 </button>
+            <button type="button" class="btn" data-op="."> . </button>
+            <button type="button" class="btn btn-orange" data-action="backspace"> C </button>
+            <button type="button" class="btn btn-red" data-action="calculate"> = </button>
         </div>
     </div>
 </body>
