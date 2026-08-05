@@ -4,7 +4,10 @@ const buttonContainer = document.querySelector(".button-container");
 
 let equation = "";
 let result = "";
-let numbers = [];
+let equationParts = [""];
+let lastIndex = 0;
+
+const operators = ["+", "-", "x", "/", "%"];
 
 buttonContainer.addEventListener("click", (event) => {
     const button = event.target;
@@ -22,28 +25,47 @@ buttonContainer.addEventListener("click", (event) => {
 
     // update the display
     updateDisplay();
+    console.log(equationParts, lastIndex);
+    
 })
 
 function handleNumber(number){
-    equation += number;
+    // if last entered character is a operator, create a new eqation part
+    if (operators.includes(equationParts[lastIndex])) { 
+        equationParts.push(""); 
+        lastIndex++;
+    }
+
+    // add the new character to the last number of the eqation part.
+    equationParts[lastIndex] += number;
 }
 
-function handleOperator(operator){
-    const operators = [" + ", " - ", " x ", " / ", " % "]
+function handleOperator(operator){  
     if (operator === "x²"){ 
         // if the input itn't just a number
         if (Number.isNaN(Number(equation))){ return; }
 
         const numEquation = Number(equation);
-        equation = `${numEquation * numEquation}`;
+        equationParts = [`${numEquation * numEquation}`];
         return;   
     }
-    // operator cannot be at the begining
-    if (equation === "" || operators.some((op) => equation.endsWith(op))){
+
+    // if the operator is . operator
+    if(operator === "."){
+        // one number can have only one .
+        if (equationParts[lastIndex].includes(".")){ return; }
+        equationParts[lastIndex] += operator;
         return;
     }
 
-    equation += ` ${operator} `;
+    // operator cannot be at the begining or cannot be included twice contiguisly
+    if (equation === "" || operators.some((op) => equationParts[lastIndex] === op)){
+        return;
+    }
+
+
+    equationParts.push(`${operator}`);
+    lastIndex++;
 }
 
 function handleAction(action){
@@ -73,11 +95,11 @@ function calculteResult(){
     // update the sub result
 }
 
-function calculateSquare(){
-     
-}
-
 function updateDisplay(){
+    equation = equationParts.reduce((eqationString, part) => {
+        return eqationString += part;
+    }, "");
+
     inputOutputField.textContent = equation;
     subResultField.textContent = result;
 }

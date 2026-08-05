@@ -1,1 +1,1 @@
-console.log(Number.isNaN("hwllo"))
+console.log(.1 * 5)
