@@ -20,6 +20,14 @@ buttonContainer.addEventListener("click", (event) => {
     if (!button){ return; }
 
     const { num, op, action } = button.dataset;
+
+    // if number or operator is clicked, check for character limit
+    if ((num || op) && (equation.length >= 15)){
+        result = ERROR_MESSAGES.charLimitError;
+        updateDisplay();
+        return;
+    }
+
     if(num){
         handleNumber(num)
     }
@@ -32,32 +40,27 @@ buttonContainer.addEventListener("click", (event) => {
 
     // update the display
     updateDisplay();
-    console.log(equationParts, (equationParts.length - 1));
+    console.log(`Parts: ${equationParts}, lastIndex : ${(equationParts.length - 1)}`);
     
 })
 
 function handleNumber(number){
     // if last entered character is a operator, create a new eqation part
-    if (operators.includes(equationParts[(equationParts.length - 1)])) { 
+    if (operators.includes(getLastEquationPart())) { 
         equationParts.push(""); 
         
     }
 
-    // limit the ammount of characters accepted per calculation
-    if (equation.length >= 14){
-        result = ERROR_MESSAGES.charLimitError;
-        return;
-    }
     // add the new character to the last number of the eqation part.
-    equationParts[(equationParts.length - 1)] += number;
+    equationParts[equationParts.length - 1] += number;
     
     calculateResult()
 }
 
 function handleOperator(operator){  
     if (operator === "x²"){ 
-        // if the input itn't just a number
-        if (Number.isNaN(Number(equation))){ return; }
+        // Only allow squaring if the equation is a single number
+        if (equationParts.length !== 1 || equationParts[0] === "") return;
 
         const numEquation = Number(equation);
         equationParts = [`${numEquation * numEquation}`];
@@ -67,13 +70,13 @@ function handleOperator(operator){
     // if the operator is . operator
     if(operator === "."){
         // if last entered character is a operator, create a new eqation part
-        if (operators.includes(equationParts[(equationParts.length - 1)])) { 
+        if (operators.includes(getLastEquationPart())) { 
             equationParts.push("");    
         }
         // one number can have only one .
-        if (equationParts[(equationParts.length - 1)].includes(".")){ return; }
+        if (getLastEquationPart().includes(".")){ return; }
 
-        equationParts[(equationParts.length - 1)] += operator;
+        equationParts[equationParts.length - 1] += operator;
         return;
     }
 
@@ -83,12 +86,10 @@ function handleOperator(operator){
     }
 
     // swap operators if last character is an operator
-    if (operators.includes(equationParts[(equationParts.length - 1)])){
-        equationParts[(equationParts.length - 1)] = operator;
+    if (operators.includes(getLastEquationPart())){
+        equationParts[equationParts.length - 1] = operator;
         return;
     }
-
-
     equationParts.push(`${operator}`);
     
 }
@@ -105,20 +106,19 @@ function handleAction(action){
             break;
 
         case "calculate":
+            calculateResult();
             // prevent error messages copying from result to Main text
             if (result && !Object.values(ERROR_MESSAGES).includes(result)) {
                 equationParts = [result];
-                lastIndex = 0;
                 result = "";
             }
-            break;
-            
+            break;     
     }
 }
 
 function calculateResult(){
     // if last input is an operator : do not calculate 
-    if (operators.includes(equationParts[(equationParts.length - 1)])){ return; }
+    if (operators.includes(getLastEquationPart())){ return; }
 
     /// if eqation has only one number : do not calculate
     if (equationParts.length === 1){ return; }
@@ -161,22 +161,20 @@ function calculateResult(){
         // update the sub result
         result = String(total);
     }    
-    console.log(total);
     
 }
 
 function backSpace(){
     // remove the character in the end
-    equationParts[(equationParts.length - 1)] = equationParts[(equationParts.length - 1)].slice(0, -1);
+    equationParts[equationParts.length - 1] = equationParts[equationParts.length - 1].slice(0, -1);
 
     // if the equation is empty, do nothing.
-    if (equationParts.length === 1 && equationParts[(equationParts.length - 1)] === ""){ return; }
+    if (equationParts.length === 1 && getLastEquationPart() === ""){ return; }
     
     // if the last eqation part is empty, remove that part
-    if (equationParts[(equationParts.length - 1)] === "")
+    if (getLastEquationPart() === "")
     {
         equationParts.pop();
-        
     }
 
     // if equations has only 2 parts (which means it only has number and operator), make the result = ""
@@ -191,9 +189,9 @@ function backSpace(){
 
 function updateDisplay(){
     equation = equationParts.join("");
-
-    console.log(equation);
     
     inputOutputField.textContent = equation;
     subResultField.textContent = result;
 }
+
+function getLastEquationPart(){ return equationParts[equationParts.length - 1];}
