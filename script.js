@@ -59,8 +59,14 @@ function handleOperator(operator){
 
     // if the operator is . operator
     if(operator === "."){
+        // if last entered character is a operator, create a new eqation part
+        if (operators.includes(equationParts[lastIndex])) { 
+            equationParts.push(""); 
+            lastIndex++;
+        }
         // one number can have only one .
         if (equationParts[lastIndex].includes(".")){ return; }
+        
         equationParts[lastIndex] += operator;
         return;
     }
