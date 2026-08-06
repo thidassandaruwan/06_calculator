@@ -38,6 +38,7 @@ function handleNumber(number){
 
     // add the new character to the last number of the eqation part.
     equationParts[lastIndex] += number;
+    calculateResult()
 }
 
 function handleOperator(operator){  
@@ -71,17 +72,16 @@ function handleOperator(operator){
 function handleAction(action){
     switch (action){
         case "clear-all":
-            equation = "";
+            equationParts = [""]
             result = "";
             break;
 
         case "backspace":
-            equation = equation.slice(0, -1);
-            calculteResult();
+            backSpace();
             break;
 
         case "calculate":
-            calculteResult();
+            calculateResult(); //////////////////////////////////////////////// not necessary but check at the end
             equation = result;
             result = "";
             break;
@@ -89,10 +89,28 @@ function handleAction(action){
     }
 }
 
-function calculteResult(){
+function calculateResult(){
+    // check the eqation format
+        // if ends with operator
+
     // calculate the result
 
     // update the sub result
+}
+
+function backSpace(){
+    // remove the character in the end
+    equationParts[lastIndex] = equationParts[lastIndex].slice(0, -1);
+
+    // if the equation is empty, do nothing.
+    if (equationParts.length === 1 && equationParts[lastIndex] === ""){ return; }
+    // if the last eqation part is empty, remove that part
+    else if (equationParts[lastIndex] === "")
+    {
+        equationParts.pop();
+        lastIndex--;
+    }
+    calculateResult();
 }
 
 function updateDisplay(){
