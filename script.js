@@ -10,7 +10,7 @@ const operators = ["+", "-", "x", "/", "%"];
 const ERROR_MESSAGES = {
     charLimitError : "Character Limit Reached!",
     zerDivisionError : "Cannot divide by 0!",
-    nanError : "ERROR",
+    formatError : "Format Error",
 }
 
 buttonContainer.addEventListener("click", (event) => {
@@ -158,7 +158,7 @@ function calculateResult(){
     total = Number(total.toFixed(5));
 
     if (isNaN(total)){
-        result = ERROR_MESSAGES.nanError;
+        result = ERROR_MESSAGES.formatError;
     }
     else{
         // update the sub result
