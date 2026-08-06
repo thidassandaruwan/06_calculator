@@ -45,6 +45,13 @@ body{
     box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -1px -1px 2px rgba(255, 255, 255, 0.3);
 }
 
+.input-output-section,
+.sub-result-section {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .input-output-section{
     font-size: 2.5rem;
 }

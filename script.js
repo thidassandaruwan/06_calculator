@@ -36,8 +36,14 @@ function handleNumber(number){
         lastIndex++;
     }
 
+    // limit the ammount of characters accepted per calculation
+    if (equation.length >= 14){
+        result = "Character Limit Reached!";
+        return;
+    }
     // add the new character to the last number of the eqation part.
     equationParts[lastIndex] += number;
+    
     calculateResult()
 }
 
@@ -73,6 +79,7 @@ function handleAction(action){
     switch (action){
         case "clear-all":
             equationParts = [""]
+            lastIndex = 0;
             result = "";
             break;
 
@@ -81,8 +88,8 @@ function handleAction(action){
             break;
 
         case "calculate":
-            calculateResult(); //////////////////////////////////////////////// not necessary but check at the end
-            equation = result;
+            equationParts = [result];
+            lastIndex = 0;
             result = "";
             break;
             
@@ -90,12 +97,46 @@ function handleAction(action){
 }
 
 function calculateResult(){
-    // check the eqation format
-        // if ends with operator
 
-    // calculate the result
+    // if last input is an operator : do not calculate 
+    if (operators.includes(equationParts[lastIndex])){ return; }
+
+    /// if eqation has only one number : do not calculate
+    if (equationParts.length === 1){ return; }
+
+    let total = Number(equationParts[0]);
+    // caculate the value
+    for (let i = 1; i < (equationParts.length - 1); i += 2){ 
+        const currentOperator = equationParts[i];
+        const nextNumber = Number(equationParts[i + 1]);
+        switch (currentOperator){
+            case "+":
+                total += nextNumber;
+                break;
+            case "-":
+                total -= nextNumber;
+                break;
+            case "x":
+                total *= nextNumber;
+                break;
+            case "/":
+                if(nextNumber === 0){
+                    result = "Cannot divide by 0";
+                    return;
+                }
+                total /= nextNumber;
+                break;
+            case "%":
+                total %= nextNumber;
+                break;
+        }
+    }
+
+    // limit the result to only have 5 decimal places
+    total = Number(total.toFixed(5));
 
     // update the sub result
+    result = String(total);
 }
 
 function backSpace(){
@@ -114,10 +155,10 @@ function backSpace(){
 }
 
 function updateDisplay(){
-    equation = equationParts.reduce((eqationString, part) => {
-        return eqationString += part;
-    }, "");
+    equation = equationParts.join("");
 
+    console.log(equation);
+    
     inputOutputField.textContent = equation;
     subResultField.textContent = result;
 }
