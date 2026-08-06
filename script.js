@@ -54,6 +54,7 @@ function handleOperator(operator){
 
         const numEquation = Number(equation);
         equationParts = [`${numEquation * numEquation}`];
+        lastIndex = 0;
         return;   
     }
 
@@ -66,13 +67,19 @@ function handleOperator(operator){
         }
         // one number can have only one .
         if (equationParts[lastIndex].includes(".")){ return; }
-        
+
         equationParts[lastIndex] += operator;
         return;
     }
 
     // operator cannot be at the begining or cannot be included twice contiguisly
-    if (equation === "" || operators.some((op) => equationParts[lastIndex] === op)){
+    if (equation === ""){
+        return;
+    }
+
+    // swap operators if last character is an operator
+    if (operators.includes(equationParts[lastIndex])){
+        equationParts[lastIndex] = operator;
         return;
     }
 
@@ -103,7 +110,6 @@ function handleAction(action){
 }
 
 function calculateResult(){
-
     // if last input is an operator : do not calculate 
     if (operators.includes(equationParts[lastIndex])){ return; }
 
@@ -141,8 +147,17 @@ function calculateResult(){
     // limit the result to only have 5 decimal places
     total = Number(total.toFixed(5));
 
-    // update the sub result
+    // if (Number.isNaN(total)){
+    //     total = "ERROR";
+    // }
+    // else{
+    //     // update the sub result
+    //     result = String(total);
+    // }
+
     result = String(total);
+
+    
 }
 
 function backSpace(){
@@ -151,13 +166,22 @@ function backSpace(){
 
     // if the equation is empty, do nothing.
     if (equationParts.length === 1 && equationParts[lastIndex] === ""){ return; }
+    
     // if the last eqation part is empty, remove that part
-    else if (equationParts[lastIndex] === "")
+    if (equationParts[lastIndex] === "")
     {
         equationParts.pop();
         lastIndex--;
     }
-    calculateResult();
+
+    // if equations has only 2 parts (which means it only has number and operator), make the result = ""
+    if (equationParts.length < 3){ 
+        result = ""; 
+    }
+    else{
+        calculateResult();
+    }
+    
 }
 
 function updateDisplay(){
