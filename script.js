@@ -117,17 +117,17 @@ function handleAction(action){
 }
 
 function calculateResult(){
-    // if last input is an operator : do not calculate 
-    if (operators.includes(getLastEquationPart())){ return; }
+    // get the valid parts of the eqation (this removes opeartors at the end)
+    const validParts = (operators.includes(getLastEquationPart))? equationParts.slice(0, -1) : equationParts;
 
-    /// if eqation has only one number : do not calculate
-    if (equationParts.length === 1){ return; }
+    /// if eqation need to have at least 3 parts
+    if (validParts.length < 3){ return; }
 
-    let total = Number(equationParts[0]);
+    let total = Number(validParts[0]);
     // caculate the value
-    for (let i = 1; i < (equationParts.length - 1); i += 2){ 
-        const currentOperator = equationParts[i];
-        const nextNumber = Number(equationParts[i + 1]);
+    for (let i = 1; i < (validParts.length - 1); i += 2){ 
+        const currentOperator = validParts[i];
+        const nextNumber = Number(validParts[i + 1]);
         switch (currentOperator){
             case "+":
                 total += nextNumber;
@@ -172,19 +172,11 @@ function backSpace(){
     if (equationParts.length === 1 && getLastEquationPart() === ""){ return; }
     
     // if the last eqation part is empty, remove that part
-    if (getLastEquationPart() === "")
-    {
+    if (getLastEquationPart() === ""){
         equationParts.pop();
     }
-
-    // if equations has only 2 parts (which means it only has number and operator), make the result = ""
-    if (equationParts.length < 3){ 
-        result = ""; 
-    }
-    else{
-        calculateResult();
-    }
     
+    calculateResult();
 }
 
 function updateDisplay(){
