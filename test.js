@@ -1,1 +1,2 @@
-console.log(10 + 0.)
+console.log(isNaN(""), isNaN("."));
+console.log(Number.isNaN(Number("")), Number.isNaN(Number(".")));

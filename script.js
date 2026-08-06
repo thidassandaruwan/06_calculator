@@ -59,8 +59,8 @@ function handleNumber(number){
 
 function handleOperator(operator){  
     if (operator === "x²"){ 
-        // Only allow squaring if the equation is a single number
-        if (equationParts.length !== 1 || equationParts[0] === "") return;
+        // Only allow squaring if the equation is a single number (the number cannot be empty of be just a ".")
+        if (equationParts.length !== 1 || equationParts[0] === "" || equationParts[0] === ".") return;
 
         const numEquation = Number(equation);
         equationParts = [`${numEquation * numEquation}`];
