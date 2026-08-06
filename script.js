@@ -118,10 +118,13 @@ function handleAction(action){
 
 function calculateResult(){
     // get the valid parts of the eqation (this removes opeartors at the end)
-    const validParts = (operators.includes(getLastEquationPart))? equationParts.slice(0, -1) : equationParts;
+    const validParts = (operators.includes(getLastEquationPart()))? equationParts.slice(0, -1) : equationParts;
 
     /// if eqation need to have at least 3 parts
-    if (validParts.length < 3){ return; }
+    if (validParts.length < 3){
+        result = ""
+        return; 
+    }
 
     let total = Number(validParts[0]);
     // caculate the value
@@ -168,11 +171,8 @@ function backSpace(){
     // remove the character in the end
     equationParts[equationParts.length - 1] = equationParts[equationParts.length - 1].slice(0, -1);
 
-    // if the equation is empty, do nothing.
-    if (equationParts.length === 1 && getLastEquationPart() === ""){ return; }
-    
-    // if the last eqation part is empty, remove that part
-    if (getLastEquationPart() === ""){
+    // if the eqation has more than one part and last part is empty
+    if (getLastEquationPart() === "" && equationParts.length > 1){
         equationParts.pop();
     }
     
