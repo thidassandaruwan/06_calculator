@@ -5,12 +5,19 @@ const buttonContainer = document.querySelector(".button-container");
 let equation = "";
 let result = "";
 let equationParts = [""];
-let lastIndex = 0;
 
 const operators = ["+", "-", "x", "/", "%"];
+const ERROR_MESSAGES = {
+    charLimitError : "Character Limit Reached!",
+    zerDivisionError : "Cannot divide by 0!",
+    nanError : "ERROR",
+}
 
 buttonContainer.addEventListener("click", (event) => {
-    const button = event.target;
+    // get the nearest element which is a button. The usual usecase is to prevent retrieveing <span> elements stored inside <button> 
+    // but this also migitate clicks outside the buttons but still within the numpad
+    const button = event.target.closest("button");
+    if (!button){ return; }
 
     const { num, op, action } = button.dataset;
     if(num){
@@ -25,24 +32,24 @@ buttonContainer.addEventListener("click", (event) => {
 
     // update the display
     updateDisplay();
-    console.log(equationParts, lastIndex);
+    console.log(equationParts, (equationParts.length - 1));
     
 })
 
 function handleNumber(number){
     // if last entered character is a operator, create a new eqation part
-    if (operators.includes(equationParts[lastIndex])) { 
+    if (operators.includes(equationParts[(equationParts.length - 1)])) { 
         equationParts.push(""); 
-        lastIndex++;
+        
     }
 
     // limit the ammount of characters accepted per calculation
     if (equation.length >= 14){
-        result = "Character Limit Reached!";
+        result = ERROR_MESSAGES.charLimitError;
         return;
     }
     // add the new character to the last number of the eqation part.
-    equationParts[lastIndex] += number;
+    equationParts[(equationParts.length - 1)] += number;
     
     calculateResult()
 }
@@ -54,21 +61,19 @@ function handleOperator(operator){
 
         const numEquation = Number(equation);
         equationParts = [`${numEquation * numEquation}`];
-        lastIndex = 0;
         return;   
     }
 
     // if the operator is . operator
     if(operator === "."){
         // if last entered character is a operator, create a new eqation part
-        if (operators.includes(equationParts[lastIndex])) { 
-            equationParts.push(""); 
-            lastIndex++;
+        if (operators.includes(equationParts[(equationParts.length - 1)])) { 
+            equationParts.push("");    
         }
         // one number can have only one .
-        if (equationParts[lastIndex].includes(".")){ return; }
+        if (equationParts[(equationParts.length - 1)].includes(".")){ return; }
 
-        equationParts[lastIndex] += operator;
+        equationParts[(equationParts.length - 1)] += operator;
         return;
     }
 
@@ -78,21 +83,20 @@ function handleOperator(operator){
     }
 
     // swap operators if last character is an operator
-    if (operators.includes(equationParts[lastIndex])){
-        equationParts[lastIndex] = operator;
+    if (operators.includes(equationParts[(equationParts.length - 1)])){
+        equationParts[(equationParts.length - 1)] = operator;
         return;
     }
 
 
     equationParts.push(`${operator}`);
-    lastIndex++;
+    
 }
 
 function handleAction(action){
     switch (action){
         case "clear-all":
-            equationParts = [""]
-            lastIndex = 0;
+            equationParts = [""];
             result = "";
             break;
 
@@ -101,9 +105,12 @@ function handleAction(action){
             break;
 
         case "calculate":
-            equationParts = [result];
-            lastIndex = 0;
-            result = "";
+            // prevent error messages copying from result to Main text
+            if (result && !Object.values(ERROR_MESSAGES).includes(result)) {
+                equationParts = [result];
+                lastIndex = 0;
+                result = "";
+            }
             break;
             
     }
@@ -111,7 +118,7 @@ function handleAction(action){
 
 function calculateResult(){
     // if last input is an operator : do not calculate 
-    if (operators.includes(equationParts[lastIndex])){ return; }
+    if (operators.includes(equationParts[(equationParts.length - 1)])){ return; }
 
     /// if eqation has only one number : do not calculate
     if (equationParts.length === 1){ return; }
@@ -133,7 +140,7 @@ function calculateResult(){
                 break;
             case "/":
                 if(nextNumber === 0){
-                    result = "Cannot divide by 0";
+                    result = ERROR_MESSAGES.zerDivisionError;
                     return;
                 }
                 total /= nextNumber;
@@ -147,31 +154,29 @@ function calculateResult(){
     // limit the result to only have 5 decimal places
     total = Number(total.toFixed(5));
 
-    // if (Number.isNaN(total)){
-    //     total = "ERROR";
-    // }
-    // else{
-    //     // update the sub result
-    //     result = String(total);
-    // }
-
-    result = String(total);
-
+    if (isNaN(total)){
+        result = ERROR_MESSAGES.nanError;
+    }
+    else{
+        // update the sub result
+        result = String(total);
+    }    
+    console.log(total);
     
 }
 
 function backSpace(){
     // remove the character in the end
-    equationParts[lastIndex] = equationParts[lastIndex].slice(0, -1);
+    equationParts[(equationParts.length - 1)] = equationParts[(equationParts.length - 1)].slice(0, -1);
 
     // if the equation is empty, do nothing.
-    if (equationParts.length === 1 && equationParts[lastIndex] === ""){ return; }
+    if (equationParts.length === 1 && equationParts[(equationParts.length - 1)] === ""){ return; }
     
     // if the last eqation part is empty, remove that part
-    if (equationParts[lastIndex] === "")
+    if (equationParts[(equationParts.length - 1)] === "")
     {
         equationParts.pop();
-        lastIndex--;
+        
     }
 
     // if equations has only 2 parts (which means it only has number and operator), make the result = ""
